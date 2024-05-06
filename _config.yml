@@ -1,0 +1,8 @@
+title: "Dan Clawson: Stuff"
+url: https://clawson.github.io
+
+timezone: America/Denver
+
+theme: jekyll-theme-midnight
+plugins:
+  - jekyll-feed
