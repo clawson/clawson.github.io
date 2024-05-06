@@ -1,24 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <title>Sunburst Example</title>
     <script src="../lib/d3.v7.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <svg></svg>
-</body>
-<script>
+  </body>
+  <script>
     var vData = {
-        'id' : 'TOPICS', 'children' : [{
-            'id' : 'Topic A',
-            'children' : [{'id' : 'Sub A1', 'size' : 4}, {'id' : 'Sub A2', 'size' : 4}]
-        }, {
-            'id' : 'Topic B',
-            'children' : [{'id' : 'Sub B1', 'size' : 3}, {'id' : 'Sub B2', 'size' : 3}, {'id' : 'Sub B3', 'size' : 3}]
-        }, {
-            'id' : 'Topic C',
-            'children' : [{'id' : 'Sub C1', 'size' : 4}, {'id' : 'Sub C2', 'size' : 4}]
-        }]
+      id: "TOPICS",
+      children: [
+        {
+          id: "Topic A",
+          children: [
+            { id: "Sub A1", size: 4 },
+            { id: "Sub A2", size: 4 },
+          ],
+        },
+        {
+          id: "Topic B",
+          children: [
+            { id: "Sub B1", size: 3 },
+            { id: "Sub B2", size: 3 },
+            { id: "Sub B3", size: 3 },
+          ],
+        },
+        {
+          id: "Topic C",
+          children: [
+            { id: "Sub C1", size: 4 },
+            { id: "Sub C2", size: 4 },
+          ],
+        },
+      ],
     };
 
     var vWidth = 300;
@@ -26,27 +41,36 @@
     var vRadius = Math.min(vWidth, vHeight) / 2;
     var vColor = d3.scaleOrdinal(d3.schemeCategory20b);
 
+    var g = d3
+      .select("svg")
+      .attr("width", vWidth)
+      .attr("height", vHeight)
+      .append("g")
+      .attr("transform", "translate(" + vWidth / 2 + "," + vHeight / 2 + ")");
 
-    var g = d3.select('svg')
-        .attr('width', vWidth)
-        .attr('height', vHeight)
-        .append('g')
-        .attr('transform', 'translate(' + vWidth / 2 + ',' + vHeight /2 + ')');
+    var vLayout = d3.partition().size([2 * Math.PI, vRadius]);
 
-    var vLayout = d3.partition()
-        .size([2 * Math.PI, vRadius]);
+    var vRoot = d3.hierarchy(vData).sum(function (d) {
+      return d.size;
+    });
 
-    var vRoot = d3.hierarchy(vData)
-        .sum(function (d) { return d.size });
-        
     vLayout(vRoot);
-    var vArc = d3.arc()
-        .startAngle(function (d) { return d.x0 })
-        .endAngle(function (d) { return d.x1 })
-        .innerRadius(function (d) { return d.y0 })
-        .outerRadius(function (d) { return d.y1 });
+    var vArc = d3
+      .arc()
+      .startAngle(function (d) {
+        return d.x0;
+      })
+      .endAngle(function (d) {
+        return d.x1;
+      })
+      .innerRadius(function (d) {
+        return d.y0;
+      })
+      .outerRadius(function (d) {
+        return d.y1;
+      });
 
-/*
+    /*
     var vNodes = vRoot.descendants();
 
     var vSlices = g.selectAll('path')
@@ -62,13 +86,17 @@
         });
 */
 
-    g.selectAll('path')
-        .data(vRoot.descendants())
-        .enter().append('path')
-        .attr('display', function (d) { return d.depth ? null : 'none'; })
-        .attr('d', arc)
-        .style('stroke', '#fff')
-        .style('fill', function (d) { return color((d.children ? d : d.parent).data.name); });
-
-</script>
+    g.selectAll("path")
+      .data(vRoot.descendants())
+      .enter()
+      .append("path")
+      .attr("display", function (d) {
+        return d.depth ? null : "none";
+      })
+      .attr("d", arc)
+      .style("stroke", "#fff")
+      .style("fill", function (d) {
+        return color((d.children ? d : d.parent).data.name);
+      });
+  </script>
 </html>
